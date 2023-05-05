@@ -1,7 +1,3 @@
-import os
-import pylab
-import matplotlib
-import collections
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -144,8 +140,8 @@ def plot(
     plot_grid(ax, grid_layout)
 
     # set range
-    pylab.xlim(x_range)
-    pylab.ylim(y_range)
+    # pylab.xlim(x_range)
+    # pylab.ylim(y_range)
 
     return fig, ax
 
@@ -235,7 +231,7 @@ def plot_chroma(
         origin='lower',
         interpolation='none')
     # set range
-    pylab.xlim(x_range)
+    # pylab.xlim(x_range)
 
     return fig, ax
 
