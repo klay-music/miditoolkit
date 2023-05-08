@@ -634,9 +634,13 @@ def _check_note_within_range(note, st, ed, shift=True):
     if shift:
         tmp_st -= st
         tmp_ed -= st
-    note.start = int(tmp_st)
-    note.end = int(tmp_ed)
-    return note
+
+    return Note(
+        velocity=note.velocity,
+        pitch=note.pitch,
+        start=tmp_st,
+        end=tmp_ed
+    )
 
 
 def _include_meta_events_within_range(events, st, ed, shift=True, front=True):
