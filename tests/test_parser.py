@@ -1,5 +1,12 @@
-from miditoolkit.midi.parser import _check_note_within_range
+from miditoolkit.midi.parser import (
+    _check_note_within_range,
+    _include_meta_events_within_range,
+)
 from miditoolkit.midi.containers import Note
+
+import mido
+from mido import MetaMessage
+
 from copy import deepcopy
 
 import pytest
@@ -195,3 +202,46 @@ def test__check_note_within_range_false(note):
             assert (
                 got is None
             ), f"Failed for range: ({range_start_tick}, {range_end_tick})"
+
+
+
+def test__include_meta_events_within_range():
+    events = [
+        MetaMessage("set_tempo", time=100, tempo=mido.bpm2tempo(120)),
+        MetaMessage("lyrics", time=120, text="Hello"),
+        MetaMessage("marker", time=140, text="World"),
+        MetaMessage("key_signature", time=160, key="G"),
+    ]
+
+    orig = deepcopy(events)
+
+    # when front == True, the event preceding to the start tick is included
+    front = True
+    got = _include_meta_events_within_range(
+        events=events,
+        st=110,
+        ed=150,
+        front=front,
+    )
+    assert len(got) == 3
+    exp_times = [0, 10, 30]
+    assert [e.time for e in got] == exp_times
+
+    # original events should be unchanged
+    assert events == orig
+
+    # when front == False, the event preceding to the start tick is not included
+    front = False
+    got = _include_meta_events_within_range(
+        events=events,
+        st=110,
+        ed=150,
+        front=front,
+    )
+    assert len(got) == 2
+
+    exp_times = [10, 30]
+    assert [e.time for e in got] == exp_times
+
+    # original events should be unchanged
+    assert events == orig

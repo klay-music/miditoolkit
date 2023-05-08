@@ -659,7 +659,7 @@ def _include_meta_events_within_range(events, st, ed, shift=True, front=True):
         if event.time < st:
             break
         if event.time < ed:
-            proc_events.append(event)
+            proc_events.append(deepcopy(event))
         i -= 1
 
     # if the first tick has no event, add the previous one
@@ -667,7 +667,7 @@ def _include_meta_events_within_range(events, st, ed, shift=True, front=True):
         if not proc_events:
             proc_events = [events[i]]
         elif proc_events[-1].time != st:
-            proc_events.append(events[i])
+            proc_events.append(deepcopy(events[i]))
         else:
             pass
 
